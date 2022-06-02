@@ -1,3 +1,4 @@
+// @ts-check
 const {
   kFormatter,
   encodeHTML,
@@ -65,6 +66,11 @@ const iconWithLabel = (icon, label, testid) => {
   return flexLayout({ items: [iconSvg, text], gap: 20 }).join("");
 };
 
+/**
+ * @param {import('../fetchers/types').RepositoryData} repo 
+ * @param {Partial<import("./types").RepoCardOptions>} options 
+ * @returns {string}
+ */
 const renderRepoCard = (repo, options = {}) => {
   const {
     name,
@@ -110,15 +116,14 @@ const renderRepoCard = (repo, options = {}) => {
   });
 
   // returns theme based colors with proper overrides and defaults
-  const { titleColor, textColor, iconColor, bgColor, borderColor } =
-    getCardColors({
-      title_color,
-      icon_color,
-      text_color,
-      bg_color,
-      border_color,
-      theme,
-    });
+  const colors = getCardColors({
+    title_color,
+    icon_color,
+    text_color,
+    bg_color,
+    border_color,
+    theme,
+  });
 
   const svgLanguage = primaryLanguage
     ? createLanguageNode(langName, langColor)
@@ -140,27 +145,21 @@ const renderRepoCard = (repo, options = {}) => {
   }).join("");
 
   const card = new Card({
-    defaultTitle: header,
+    defaultTitle: header.length > 35 ? `${header.slice(0, 35)}...` : header,
     titlePrefixIcon: icons.contribs,
     width: 400,
     height,
     border_radius,
-    colors: {
-      titleColor,
-      textColor,
-      iconColor,
-      bgColor,
-      borderColor,
-    },
+    colors,
   });
 
   card.disableAnimations();
   card.setHideBorder(hide_border);
   card.setHideTitle(false);
   card.setCSS(`
-    .description { font: 400 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${textColor} }
-    .gray { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${textColor} }
-    .icon { fill: ${iconColor} }
+    .description { font: 400 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${colors.textColor} }
+    .gray { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${colors.textColor} }
+    .icon { fill: ${colors.iconColor} }
     .badge { font: 600 11px 'Segoe UI', Ubuntu, Sans-Serif; }
     .badge rect { opacity: 0.2 }
   `);
@@ -168,9 +167,11 @@ const renderRepoCard = (repo, options = {}) => {
   return card.render(`
     ${
       isTemplate
-        ? getBadgeSVG(i18n.t("repocard.template"), textColor)
+        // @ts-ignore
+        ? getBadgeSVG(i18n.t("repocard.template"), colors.textColor)
         : isArchived
-        ? getBadgeSVG(i18n.t("repocard.archived"), textColor)
+        // @ts-ignore
+        ? getBadgeSVG(i18n.t("repocard.archived"), colors.textColor)
         : ""
     }
 
