@@ -80,7 +80,7 @@ const createCompactLangNode = ({ lang, totalSize }) => {
  */
 const createLanguageTextNode = ({ langs, totalSize }) => {
   const longestLang = getLongestLang(langs);
-  const chunked = chunkArray(langs, langs.length / 2);
+  const chunked = chunkArray(langs, langs.length / 3);
   const layouts = chunked.map((array) => {
     // @ts-ignore
     const items = array.map((lang, index) =>
@@ -184,7 +184,7 @@ const renderCompactLayout = (langs, width, totalLanguageSize) => {
  * @returns {number}
  */
 const calculateCompactLayoutHeight = (totalLangs) => {
-  return 90 + Math.round(totalLangs / 2) * 25;
+  return 90 + Math.round(totalLangs / 3) * 25;
 };
 
 /**
@@ -204,7 +204,7 @@ const calculateNormalLayoutHeight = (totalLangs) => {
 const useLanguages = (topLangs, hide, langs_count) => {
   let langs = Object.values(topLangs);
   let langsToHide = {};
-  let langsCount = clampValue(parseInt(langs_count), 1, 10);
+  let langsCount = clampValue(parseInt(langs_count), 1, 15);
 
   // populate langsToHide map for quick lookup
   // while filtering out
