@@ -82,6 +82,13 @@ async function fetchTopLanguages(username, exclude_repo = []) {
       // get the size of the language (bytes)
       let langSize = prev.size;
 
+      if (prev.node.name === "Smarty") {
+        prev.node.name = "PHP";
+      }
+      else if (prev.node.name === "Makefile") {
+        prev.node.name = "Shell";
+      }
+
       // if we already have the language in the accumulator
       // & the current language name is same as previous name
       // add the size to the language size.
